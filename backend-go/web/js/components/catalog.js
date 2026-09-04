@@ -184,11 +184,15 @@ export function quickAddWidget(w) {
             config: {
                 font_scale: "medium",
                 accent_color: "cyan",
-                show_seconds: true,
-                show_date: true,
-                show_temp: true,
-                show_bar: true,
-                blur_background: true
+                shape_style: "rounded",
+                params: {
+                    show_seconds: true,
+                    show_date: true,
+                    show_temp: true,
+                    show_bar: true,
+                    show_badge: true,
+                    blur_background: true
+                }
             }
         });
         state.emit('layouts:updated', state.layouts);

@@ -162,6 +162,7 @@ async function populateSettings(wIdx) {
     const w = page.widgets[wIdx];
     const wDef = WIDGETS_CATALOG.find(x => x.id === w.widget_id) || { name: w.widget_id, icon: '📦' };
     const cfg = w.config || {};
+    const params = cfg.params || cfg;
 
     const titleEl = document.getElementById('modalWidgetTitle');
     const customTitleInput = document.getElementById('modalCustomTitle');
@@ -195,9 +196,9 @@ async function populateSettings(wIdx) {
         const sec = document.getElementById('modalShowSeconds');
         const date = document.getElementById('modalShowDate');
         const h12 = document.getElementById('modalIs12Hour');
-        if (sec) sec.checked = cfg.show_seconds !== false;
-        if (date) date.checked = cfg.show_date !== false;
-        if (h12) h12.checked = !!cfg.is_12hour;
+        if (sec) sec.checked = params.show_seconds !== false;
+        if (date) date.checked = params.show_date !== false;
+        if (h12) h12.checked = !!params.is_12hour;
     }
 
     if (isHardware) {
@@ -207,9 +208,9 @@ async function populateSettings(wIdx) {
         const badgeLabel = document.getElementById('labelHardwareBadge');
         const badgeRow = document.getElementById('rowHardwareBadge');
 
-        if (temp) temp.checked = cfg.show_temp !== false;
-        if (bar) bar.checked = cfg.show_bar !== false;
-        if (badge) badge.checked = cfg.show_badge !== false;
+        if (temp) temp.checked = params.show_temp !== false;
+        if (bar) bar.checked = params.show_bar !== false;
+        if (badge) badge.checked = params.show_badge !== false;
 
         if (badgeLabel && badgeRow) {
             badgeRow.style.display = 'flex';
@@ -227,7 +228,7 @@ async function populateSettings(wIdx) {
 
     if (isMedia) {
         const blur = document.getElementById('modalBlurBg');
-        if (blur) blur.checked = cfg.blur_background !== false;
+        if (blur) blur.checked = params.blur_background !== false;
     }
 
     if (isShortcut) {
@@ -247,21 +248,24 @@ async function populateSettings(wIdx) {
         const inputPath = document.getElementById('modalAppPath');
         const inputCmd = document.getElementById('modalAppCommand');
 
-        if (cfg.app_path && cfg.app_path.endsWith('.desktop')) {
+        const appPathVal = params.app_path || '';
+        const appCmdVal = params.app_command || '';
+
+        if (appPathVal && appPathVal.endsWith('.desktop')) {
             setShortcutMode('installed');
-            if (appSelect) appSelect.value = cfg.app_path;
-            if (inputPath) inputPath.value = cfg.app_path;
-        } else if (cfg.app_path) {
+            if (appSelect) appSelect.value = appPathVal;
+            if (inputPath) inputPath.value = appPathVal;
+        } else if (appPathVal) {
             setShortcutMode('custom_path');
-            if (inputPath) inputPath.value = cfg.app_path;
-        } else if (cfg.app_command) {
+            if (inputPath) inputPath.value = appPathVal;
+        } else if (appCmdVal) {
             setShortcutMode('command');
-            if (inputCmd) inputCmd.value = cfg.app_command;
+            if (inputCmd) inputCmd.value = appCmdVal;
         } else {
             setShortcutMode('installed');
         }
 
-        updateDetectedAppDisplay(cfg.custom_title || 'Uygulama', cfg.app_command || cfg.app_path || 'Otomatik', cfg.app_icon_url);
+        updateDetectedAppDisplay(cfg.custom_title || 'Uygulama', appCmdVal || appPathVal || 'Otomatik', params.app_icon_url);
     }
 }
 
@@ -272,6 +276,8 @@ function saveWidgetSettings() {
 
     const w = page.widgets[state.editingWidgetIndex];
     if (!w.config) w.config = {};
+    if (!w.config.params) w.config.params = {};
+    const params = w.config.params;
 
     const customTitleInput = document.getElementById('modalCustomTitle');
     const shapeSelect = document.getElementById('modalShapeStyle');
@@ -290,23 +296,23 @@ function saveWidgetSettings() {
         const sec = document.getElementById('modalShowSeconds');
         const date = document.getElementById('modalShowDate');
         const h12 = document.getElementById('modalIs12Hour');
-        if (sec) w.config.show_seconds = sec.checked;
-        if (date) w.config.show_date = date.checked;
-        if (h12) w.config.is_12hour = h12.checked;
+        if (sec) params.show_seconds = sec.checked;
+        if (date) params.show_date = date.checked;
+        if (h12) params.is_12hour = h12.checked;
     }
 
     if (isHardware) {
         const temp = document.getElementById('modalShowTemp');
         const bar = document.getElementById('modalShowBar');
         const badge = document.getElementById('modalShowBadge');
-        if (temp) w.config.show_temp = temp.checked;
-        if (bar) w.config.show_bar = bar.checked;
-        if (badge) w.config.show_badge = badge.checked;
+        if (temp) params.show_temp = temp.checked;
+        if (bar) params.show_bar = bar.checked;
+        if (badge) params.show_badge = badge.checked;
     }
 
     if (isMedia) {
         const blur = document.getElementById('modalBlurBg');
-        if (blur) w.config.blur_background = blur.checked;
+        if (blur) params.blur_background = blur.checked;
     }
 
     if (isShortcut) {
@@ -319,21 +325,21 @@ function saveWidgetSettings() {
             const selectedPath = appSelect.value;
             const app = (installedAppsCache || []).find(x => x.path === selectedPath);
             if (app) {
-                w.config.app_id = app.id;
-                w.config.app_path = app.path;
-                w.config.app_command = app.exec;
-                w.config.app_icon_url = app.icon_url;
+                params.app_id = app.id;
+                params.app_path = app.path;
+                params.app_command = app.exec;
+                params.app_icon_url = app.icon_url;
                 if (!w.config.custom_title) w.config.custom_title = app.name;
             }
         } else if (currentShortcutMode === 'custom_path' && inputPath) {
             const p = inputPath.value.trim();
-            w.config.app_path = p;
-            w.config.app_command = p;
-            w.config.app_icon_url = hiddenIconUrl ? hiddenIconUrl.value : '';
+            params.app_path = p;
+            params.app_command = p;
+            params.app_icon_url = hiddenIconUrl ? hiddenIconUrl.value : '';
         } else if (currentShortcutMode === 'command' && inputCmd) {
-            w.config.app_command = inputCmd.value.trim();
-            w.config.app_path = '';
-            w.config.app_icon_url = '';
+            params.app_command = inputCmd.value.trim();
+            params.app_path = '';
+            params.app_icon_url = '';
         }
     }
 

@@ -7,11 +7,13 @@ import { getAccentColorHex, getFontScaleMultiplier } from '../constants/themes.j
 export function getWidgetMiniPreviewHtml(w) {
     const widgetId = w.widget_id;
     const cfg = w.config || {};
+    const params = cfg.params || cfg;
     const accent = getAccentColorHex(cfg.accent_color);
     const scale = getFontScaleMultiplier(cfg.font_scale);
-    const showSec = cfg.show_seconds !== false;
-    const showTemp = cfg.show_temp !== false;
-    const showBadge = cfg.show_badge !== false;
+    const showSec = params.show_seconds !== false;
+    const showDate = params.show_date !== false;
+    const showTemp = params.show_temp !== false;
+    const showBadge = params.show_badge !== false;
     const title = cfg.custom_title;
 
     switch (widgetId) {
@@ -332,14 +334,14 @@ export function getWidgetMiniPreviewHtml(w) {
                 </div>
             `;
         case 'app_shortcut': {
-            const appId = (cfg.app_id || 'spotify').toLowerCase();
+            const appId = (params.app_id || cfg.app_id || 'spotify').toLowerCase();
             const iconMap = {
                 'spotify': '🎵', 'steam': '🎮', 'discord': '💬', 'vesktop': '💬', 'code': '💻', 'vscode': '💻',
                 'browser': '🌐', 'chrome': '🌐', 'firefox': '🦊', 'terminal': '📟', 'files': '📁',
                 'calculator': '🔢', 'screenshot': '📸', 'flameshot': '📸', 'youtube': '▶️',
                 'obsidian': '📝', 'obs': '🎥', 'lock': '🔒', 'sleep': '🌙'
             };
-            const appIcon = cfg.app_icon || iconMap[appId] || '🚀';
+            const appIcon = params.app_icon || cfg.app_icon || iconMap[appId] || '🚀';
             const defaultNameMap = {
                 'spotify': 'Spotify', 'steam': 'Steam', 'discord': 'Discord', 'vesktop': 'Vesktop', 'code': 'VS Code', 'vscode': 'VS Code',
                 'browser': 'Tarayıcı', 'chrome': 'Chrome', 'firefox': 'Firefox', 'terminal': 'Terminal', 'files': 'Dosyalar',
@@ -347,8 +349,9 @@ export function getWidgetMiniPreviewHtml(w) {
                 'obsidian': 'Obsidian', 'obs': 'OBS Studio', 'lock': 'PC Kilitle', 'sleep': 'PC Uyut'
             };
             const appLabel = title || defaultNameMap[appId] || 'Kısayol';
-            const iconContent = cfg.app_icon_url ?
-                `<img src="${cfg.app_icon_url}" style="width:36px; height:36px; object-fit:contain; border-radius:6px;" onerror="this.outerHTML='<span style=\\'font-size:1.6rem;\\'>${appIcon}</span>'" />` :
+            const appIconUrl = params.app_icon_url || cfg.app_icon_url;
+            const iconContent = appIconUrl ?
+                `<img src="${appIconUrl}" style="width:36px; height:36px; object-fit:contain; border-radius:6px;" onerror="this.outerHTML='<span style=\\'font-size:1.6rem;\\'>${appIcon}</span>'" />` :
                 `<span style="font-size:1.6rem;">${appIcon}</span>`;
 
             return `

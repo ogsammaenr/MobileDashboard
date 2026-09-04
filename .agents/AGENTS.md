@@ -77,7 +77,7 @@ MobileDashboard/
 
 - [🎨 Material 3 Kapsamlı Token & Tasarım Spesifikasyonu](file:///.agents/rules/material3_spec.md)
 - [📱 Material 3 & AMOLED Tasarım Sistemi](file:///.agents/rules/design_system.md)
-- [🏗️ Go Backend & Android Sistem Mimarisi](file:///.agents/rules/architecture.md)
+- [🏗️ Go Backend & Android Sistem Mimarisi & Şema Kuralları](file:///.agents/rules/architecture.md)
 - [🌐 Web Admin Modüler Mimarisi & Geliştirici Rehberi](file:///.agents/WEB_ADMIN.md)
 - [⚡ Geliştirme & Performans Standartları](file:///.agents/rules/guidelines.md)
 

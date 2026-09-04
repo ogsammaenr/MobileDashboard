@@ -132,3 +132,30 @@ Android istemci bu mesajı aldığında otomatik olarak `/api/layouts` uç nokta
   * `FLAG_KEEP_SCREEN_ON`: Ekranın otomatik kapanmasını donanımsal düzeyde engeller.
   * `WindowInsetsControllerCompat`: Çerçevesiz, tam ekran deneyim (`BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE`).
   * `ScreenBrightness`: Üst panelden doğrudan telefonun ekran ışığını kısma/artırma.
+
+---
+
+## 🧱 5. Veri Modeli Mimarisi & Anti-GodObject Kuralları (`schema_spec`)
+
+Tüm platformlar (Go Backend, Android Kotlin, Web Admin JavaScript) arasında **"Genel Metadata + Dinamik Parametre Haritası (Generic Metadata + Dynamic Params Map)"** mimari standardı zorunludur.
+
+### 🚫 Kesinlikle Yasak (Anti-Pattern - God-Object):
+`WidgetConfig` içine her yeni widget için ayrı bir alan (ör. `show_seconds`, `show_temp`, `app_path`, `weather_city`) **doğrudan üst seviyeye eklenemez!** Bu durum şemanın şişmesine (schema bloat) ve tip kirliliğine neden olur.
+
+### ✅ Zorunlu Standart Mimari:
+1. **Evrensel Metadata (Top-Level):** Yalnızca tüm widget'larda ortak olan temel düzen/görünüm özellikleri üst düzeyde tutulur:
+   - `custom_title` (String)
+   - `font_scale` (small / medium / large / xlarge)
+   - `accent_color` (nord, cyan, catppuccin, rosepine vb.)
+   - `shape_style` (rounded, pill, asymmetric vb.)
+2. **Dinamik Parametre Haritası (`params` Map):** Widget'a özel tüm özel parametreler `params` haritası içinde saklanır:
+   - Saat widget'ları için: `params: { "show_seconds": true, "show_date": true, "is_12hour": false }`
+   - Donanım widget'ları için: `params: { "show_temp": true, "show_bar": false, "show_badge": false }`
+   - Medya widget'ları için: `params: { "blur_background": true }`
+   - Uygulama kısayolları için: `params: { "app_id": "...", "app_path": "...", "app_command": "...", "app_icon_url": "..." }`
+
+### 💻 Kodlama Standartları:
+- **Go (`backend-go`):** `WidgetConfig` struct'ı `Params map[string]any` içerir. `UnmarshalJSON` eski düz JSON anahtarlarını otomatik olarak `Params` haritasına taşır.
+- **Android Kotlin (`android-app`):** `WidgetConfig` veri sınıfı `val params: JsonObject` içerir. Parametreler `config.getBool("key")`, `config.getString("key")` veya standart property getter'ları üzerinden güvenle okunur.
+- **Web Admin (`web/js`):** Ayarlar okunurken `const params = cfg.params || cfg;`, kaydedilirken ise `w.config.params[key] = ...` kullanılır.
+
