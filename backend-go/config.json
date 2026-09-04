@@ -1,0 +1,23 @@
+{
+  "server_name": "MobileDashboard PC",
+  "port": 8000,
+  "discovery_port": 8001,
+  "auto_accept_connections": false,
+  "authorized_clients": {
+    "android_TECNO_TECNO_KJ6_425343994": {
+      "id": "android_TECNO_TECNO_KJ6_425343994",
+      "name": "TECNO TECNO KJ6",
+      "ip": "192.168.1.58",
+      "authorized_at": "2026-09-04T21:03:08.092701166+03:00",
+      "last_seen": "2026-09-04T21:03:08.092701208+03:00"
+    },
+    "local_web_admin": {
+      "id": "local_web_admin",
+      "name": "Web Admin",
+      "ip": "127.0.0.1",
+      "authorized_at": "2026-09-04T21:03:08.083618311+03:00",
+      "last_seen": "2026-09-04T21:03:08.083618354+03:00"
+    }
+  },
+  "blocked_ips": []
+}
