@@ -24,10 +24,10 @@ export function getWidgetMiniPreviewHtml(w) {
 
                     <!-- Center Hero Big Digits with glowing colon -->
                     <div style="display:flex; align-items:center; justify-content:center; gap:8px; z-index:1;">
-                        <span style="font-size:3.2rem; font-weight:900; color:#fff; letter-spacing:-1.5px; text-shadow:0 0 20px ${accent}44;">21</span>
-                        <span style="font-size:2.8rem; font-weight:900; color:${accent}; animation:pulse 1s infinite;">:</span>
-                        <span style="font-size:3.2rem; font-weight:900; color:${accent}; letter-spacing:-1.5px; text-shadow:0 0 24px ${accent}66;">58</span>
-                        ${showSec ? `<span style="font-size:1.3rem; font-weight:900; color:${accent}; opacity:0.9; margin-left:4px;">:42</span>` : ''}
+                        <span style="font-size:4rem; font-weight:900; color:#fff; letter-spacing:-2px; text-shadow:0 0 24px ${accent}44;">21</span>
+                        <span style="font-size:3.6rem; font-weight:900; color:${accent}; animation:pulse 1s infinite;">:</span>
+                        <span style="font-size:4rem; font-weight:900; color:${accent}; letter-spacing:-2px; text-shadow:0 0 28px ${accent}66;">58</span>
+                        ${showSec ? `<span style="font-size:1.5rem; font-weight:900; color:${accent}; opacity:0.9; margin-left:6px;">:42</span>` : ''}
                     </div>
 
                     <!-- Optional Subtle Date -->

@@ -152,7 +152,7 @@
           "font_scale": "xlarge",
           "accent_color": "cyan",
           "shape_style": "rounded",
-          "show_seconds": true,
+          "show_seconds": false,
           "show_date": true,
           "show_temp": true,
           "show_bar": true,

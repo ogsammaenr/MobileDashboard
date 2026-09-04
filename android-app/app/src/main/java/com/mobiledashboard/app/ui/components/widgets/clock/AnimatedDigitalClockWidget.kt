@@ -95,16 +95,31 @@ fun AnimatedDigitalClockWidget(
     )
 
     // Pure 100% Transparent Root Box (Directly on AMOLED Pure Black)
-    Box(
+    BoxWithConstraints(
         modifier = modifier
             .fillMaxSize()
             .background(Color.Transparent),
         contentAlignment = Alignment.Center
     ) {
+        val containerWidth = maxWidth
+        val containerHeight = maxHeight
+
+        // Dynamically compute giant responsive font sizes so it maximally fills the screen
+        val hasExtras = config.showSeconds || config.is12Hour
+        val calculatedFromWidth = containerWidth.value / (if (hasExtras) 4.0f else 3.2f)
+        val calculatedFromHeight = containerHeight.value * 0.58f
+        val calculatedBase = minOf(calculatedFromWidth, calculatedFromHeight).coerceIn(48f, 240f)
+
+        val mainFontSize = (calculatedBase * scale).sp
+        val colonFontSize = (calculatedBase * 0.92f * scale).sp
+        val secondsFontSize = (calculatedBase * 0.36f * scale).sp
+        val amPmFontSize = (calculatedBase * 0.20f * scale).sp
+        val dateFontSize = (calculatedBase * 0.16f * scale).coerceIn(12f, 26f).sp
+
         // 1. BACKGROUND: Breathing Ambient Glow Aura
         Canvas(modifier = Modifier.fillMaxSize()) {
             val center = Offset(size.width / 2f, size.height / 2f)
-            val radius = (size.minDimension * 0.55f) * auraScale
+            val radius = (size.minDimension * 0.65f) * auraScale
 
             drawCircle(
                 brush = Brush.radialGradient(
@@ -121,11 +136,11 @@ fun AnimatedDigitalClockWidget(
             )
         }
 
-        // 2. FOREGROUND: Pure Centered Animated Digital Clock
+        // 2. FOREGROUND: Pure Centered Giant Animated Digital Clock
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(16.dp),
+                .padding(8.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
@@ -137,7 +152,7 @@ fun AnimatedDigitalClockWidget(
                 // Animated Hours
                 AnimatedTimeSegment(
                     text = hoursStr,
-                    fontSize = (92 * scale).sp,
+                    fontSize = mainFontSize,
                     fontWeight = FontWeight.Black,
                     color = Color.White
                 )
@@ -145,16 +160,16 @@ fun AnimatedDigitalClockWidget(
                 // Pulsing Glowing Colon
                 Text(
                     text = ":",
-                    fontSize = (86 * scale).sp,
+                    fontSize = colonFontSize,
                     fontWeight = FontWeight.Black,
                     color = accent.copy(alpha = colonAlpha),
-                    modifier = Modifier.padding(horizontal = 8.dp)
+                    modifier = Modifier.padding(horizontal = (8 * scale).dp)
                 )
 
                 // Animated Minutes
                 AnimatedTimeSegment(
                     text = minutesStr,
-                    fontSize = (92 * scale).sp,
+                    fontSize = mainFontSize,
                     fontWeight = FontWeight.Black,
                     color = accent
                 )
@@ -162,13 +177,13 @@ fun AnimatedDigitalClockWidget(
                 // Optional Seconds / 12H Tag
                 if (config.showSeconds || config.is12Hour) {
                     Column(
-                        modifier = Modifier.padding(start = 12.dp),
-                        verticalArrangement = Arrangement.spacedBy(4.dp)
+                        modifier = Modifier.padding(start = (10 * scale).dp),
+                        verticalArrangement = Arrangement.spacedBy(2.dp)
                     ) {
                         if (config.is12Hour) {
                             Text(
                                 text = amPmStr,
-                                fontSize = (18 * scale).sp,
+                                fontSize = amPmFontSize,
                                 fontWeight = FontWeight.Black,
                                 color = accent.copy(alpha = 0.85f),
                                 letterSpacing = 1.sp
@@ -177,7 +192,7 @@ fun AnimatedDigitalClockWidget(
                         if (config.showSeconds) {
                             AnimatedTimeSegment(
                                 text = secondsStr,
-                                fontSize = (32 * scale).sp,
+                                fontSize = secondsFontSize,
                                 fontWeight = FontWeight.Bold,
                                 color = accent.copy(alpha = 0.90f)
                             )
@@ -188,10 +203,10 @@ fun AnimatedDigitalClockWidget(
 
             // Optional Subtle Date
             if (config.showDate) {
-                Spacer(modifier = Modifier.height(12.dp))
+                Spacer(modifier = Modifier.height((10 * scale).dp))
                 Text(
                     text = "$dayNameStr, $dateFullStr",
-                    fontSize = (15 * scale).sp,
+                    fontSize = dateFontSize,
                     fontWeight = FontWeight.SemiBold,
                     color = Color.White.copy(alpha = 0.65f),
                     letterSpacing = 0.8.sp
@@ -227,7 +242,7 @@ private fun AnimatedTimeSegment(
                     fontWeight = fontWeight,
                     color = color,
                     fontFamily = FontFamily.SansSerif,
-                    letterSpacing = (-1).sp
+                    letterSpacing = (-2).sp
                 )
             }
         }
