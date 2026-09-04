@@ -12,6 +12,7 @@ export const CATEGORIES = [
 // 18 EXCLUSIVE MATERIAL 3 & AMOLED WIDGETS CATALOG
 // ==============================================================================
 export const WIDGETS_CATALOG = [
+    { id: "clock_animated_digital", category: "clock", name: "Animasyonlu Dev Dijital Saat", span: 4, row: 3, icon: "✨", desc: "Tüm ekranı kaplayan, kayan rakam animasyonlu, nefes alan auralı ve canlı saniye barlı pürüzsüz dijital saat" },
     { id: "clock_fullscreen_m3", category: "clock", name: "Material 3 Dev Dijital Saat Merkezi", span: 4, row: 3, icon: "🕰️", desc: "Ekranın tamamını kaplayan dev dijital saat, saniye kadranı, M3 takvim ve gün döngüsü bento matrisi" },
     { id: "clock_m3_pixel", category: "clock", name: "Material 3 Pixel Saat", span: 2, row: 2, icon: "📱", desc: "Android 14/15 büyük kilit ekranı saati, üst üste devasa rakamlar" },
     { id: "clock_m3_pill", category: "clock", name: "Material 3 Pill Saat", span: 4, row: 1, icon: "💊", desc: "M3 yatay kapsül bar saat, canlı saniye ve tarih çipi" },

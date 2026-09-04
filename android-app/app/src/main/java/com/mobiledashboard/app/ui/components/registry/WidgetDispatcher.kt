@@ -25,6 +25,10 @@ fun RenderWidget(
     val cfg = widget.config
     when (widget.widgetId) {
         // --- 1. CLOCK WIDGETS ---
+        "clock_animated_digital", "clock_animated_fullscreen", "clock_digital_animated" -> AnimatedDigitalClockWidget(
+            modifier = modifier,
+            config = cfg
+        )
         "clock_fullscreen_m3", "m3_clock_fullscreen", "fullscreen_clock", "clock_fullscreen" -> FullscreenClockWidget(
             telemetry = telemetry,
             modifier = modifier,

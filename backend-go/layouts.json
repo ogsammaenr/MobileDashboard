@@ -141,7 +141,7 @@
     "theme": "rosepine",
     "widgets": [
       {
-        "widget_id": "clock_fullscreen_m3",
+        "widget_id": "clock_animated_digital",
         "x": 0,
         "y": 0,
         "w": 4,
