@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MobileDashboard - 2D Matris & Widget Özelleştirici</title>
+    <!-- MODERN GOOGLE FONTS -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Chakra+Petch:wght@700&family=JetBrains+Mono:wght@700;800&family=Orbitron:wght@800&family=Outfit:wght@700;900&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
+    <!-- MODULAR CSS STYLES -->
+    <link rel="stylesheet" href="/css/main.css?v=2.0">
+</head>
+<body>
+
+    <!-- TOP HEADER -->
+    <header class="admin-header">
+        <div class="logo-area">
+            <div class="logo-badge">M</div>
+            <div class="logo-text">MobileDashboard</div>
+            <span class="logo-sub">2D MATRIX & CUSTOMIZER</span>
+        </div>
+        <div class="header-actions">
+            <button class="btn" id="clientManagerBtn" style="background:#16161d; border-color:#2a2a35;">
+                <span id="clientStatusDot" style="width:9px; height:9px; border-radius:50%; background:#10b981; display:inline-block;"></span>
+                <span>Cihazlar & İzinler</span>
+                <span id="clientCountBadge" style="font-size:0.7rem; background:#22c55e22; color:#22c55e; padding:2px 7px; border-radius:10px; font-weight:800; border:1px solid #22c55e44;">0 Cihaz</span>
+            </button>
+            <button class="btn btn-primary" id="saveBtn">
+                <span>💾</span>
+                <span>Düzenleri Kaydet & Telefona Gönder</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- MAIN WORKSPACE -->
+    <div class="workspace">
+        <!-- LEFT: WIDGET PALETTE -->
+        <aside class="palette-sidebar">
+            <div class="palette-header">
+                <div class="palette-title-row">
+                    <div class="palette-title">
+                        <span>📦</span>
+                        <span>Bileşen Kataloğu</span>
+                    </div>
+                    <span class="palette-count-badge" id="catalogTotalBadge">17 Bileşen</span>
+                </div>
+                <!-- Search Input -->
+                <div class="palette-search-wrapper">
+                    <span class="search-icon">🔍</span>
+                    <input type="text" id="widgetSearchInput" class="palette-search-input" placeholder="Bileşen adı veya özellik ara...">
+                    <button class="search-clear-btn" id="searchClearBtn" style="display:none;" title="Temizle">✕</button>
+                </div>
+                <!-- Category Filter Tabs -->
+                <div class="category-tabs" id="categoryTabs">
+                    <button class="category-tab-btn active" data-category="all">Tümü (18)</button>
+                    <button class="category-tab-btn" data-category="clock">🕒 Saat (7)</button>
+                    <button class="category-tab-btn" data-category="hardware">⚡ Donanım (6)</button>
+                    <button class="category-tab-btn" data-category="hub">✨ Hub (4)</button>
+                    <button class="category-tab-btn" data-category="media">🎵 Medya (3)</button>
+                </div>
+            </div>
+            <div class="palette-list" id="paletteList">
+                <!-- Injected via Catalog Component -->
+            </div>
+        </aside>
+
+        <!-- CENTER: CANVAS -->
+        <main class="canvas-area">
+            <!-- Pages Tabs Bar -->
+            <div class="pages-bar" id="pagesBar">
+                <button class="btn btn-mini" id="addPageBtn" style="padding:6px 12px;">+ Yeni Sayfa</button>
+            </div>
+
+            <div class="grid-container">
+                <div class="page-meta-row">
+                    <div class="meta-inputs">
+                        <input type="text" class="input-text" id="pageTitleInput" placeholder="Sayfa Başlığı">
+                        <select class="select-theme" id="pageThemeSelect">
+                            <option value="nord">Nord</option>
+                            <option value="catppuccin">Catppuccin Macchiato</option>
+                            <option value="everforest">Everforest Dark</option>
+                            <option value="tokyonight">Tokyo Night</option>
+                            <option value="gruvbox">Gruvbox Dark</option>
+                            <option value="monochrome">Monochrome Minimal</option>
+                            <option value="rosepine">Rosé Pine</option>
+                        </select>
+                    </div>
+                    <div style="font-size:0.75rem; color:var(--text-sub);">
+                        4 Sütunlu 2D Matris • ⚙️ Simgesiyle Font ve Renkleri Ayarlayın
+                    </div>
+                </div>
+
+                <!-- Drop Target Grid with Ghost Indicator -->
+                <div class="drop-grid" id="dropGrid">
+                    <div class="grid-ghost" id="gridGhost"></div>
+                    <!-- Cards Injected via Canvas Component -->
+                </div>
+            </div>
+        </main>
+
+        <!-- RIGHT: LIVE PHONE SIMULATOR -->
+        <aside class="preview-sidebar">
+            <div style="font-size:0.85rem; font-weight:700; color:var(--text-sub); margin-bottom:14px; text-transform:uppercase;">
+                📱 Canlı Telefon Önizleme
+            </div>
+            <div class="phone-mockup">
+                <div class="phone-notch"></div>
+                <div class="phone-screen-grid" id="simGrid">
+                    <!-- Sim Preview Cards Injected via Preview Component -->
+                </div>
+            </div>
+        </aside>
+    </div>
+
+    <!-- WIDGET SETTINGS MODAL -->
+    <div class="modal-overlay" id="settingsModal">
+        <div class="modal-window">
+            <div class="modal-header">
+                <div class="modal-title" id="modalWidgetTitle">⚙️ Widget Ayarları</div>
+                <button class="modal-close">✕</button>
+            </div>
+            <div class="modal-body">
+                <!-- Custom Title -->
+                <div class="setting-group">
+                    <label class="setting-label">Özel Başlık / İsim</label>
+                    <input type="text" class="input-text" id="modalCustomTitle" placeholder="Örn: Ryzen 9 7900X, Ana Saat">
+                </div>
+
+                <!-- Font Scale -->
+                <div class="setting-group">
+                    <label class="setting-label">Font / Tipografi Boyutu</label>
+                    <div class="btn-toggle-group">
+                        <button class="btn-toggle" data-scale="small">Küçük</button>
+                        <button class="btn-toggle active" data-scale="medium">Normal</button>
+                        <button class="btn-toggle" data-scale="large">Büyük</button>
+                        <button class="btn-toggle" data-scale="xlarge">Devasa</button>
+                    </div>
+                </div>
+
+                <!-- Accent Color -->
+                <div class="setting-group">
+                    <label class="setting-label">Kart Vurgu Rengi</label>
+                    <div class="color-palette">
+                        <div class="color-dot active" style="background:#88c0d0;" data-color="nord" title="Nord (#88c0d0)"></div>
+                        <div class="color-dot" style="background:#c6a0f6;" data-color="catppuccin" title="Catppuccin (#c6a0f6)"></div>
+                        <div class="color-dot" style="background:#a7c080;" data-color="everforest" title="Everforest (#a7c080)"></div>
+                        <div class="color-dot" style="background:#7aa2f7;" data-color="tokyonight" title="Tokyo Night (#7aa2f7)"></div>
+                        <div class="color-dot" style="background:#fe8019;" data-color="gruvbox" title="Gruvbox (#fe8019)"></div>
+                        <div class="color-dot" style="background:#e0e0e0;" data-color="monochrome" title="Monochrome (#e0e0e0)"></div>
+                        <div class="color-dot" style="background:#ebbcba;" data-color="rosepine" title="Rosé Pine (#ebbcba)"></div>
+                    </div>
+                </div>
+
+                <!-- Shape Style -->
+                <div class="setting-group">
+                    <label class="setting-label">Bileşen Şekli (Material 3 Formatı)</label>
+                    <select class="input-text" id="modalShapeStyle" style="background:#1e1e2d; color:#fff; border:1px solid #3b3b4f; padding:8px 12px; border-radius:8px; width:100%; cursor:pointer;">
+                        <option value="scalloped">🌸 8 Yapraklı Yonca / Çiçek (Scalloped)</option>
+                        <option value="clover">🍀 4 Yapraklı Yonca (Clover)</option>
+                        <option value="circle">⚪ Tam Dairesel (Circle)</option>
+                        <option value="rounded">📱 Standart M3 Squircle (28dp)</option>
+                        <option value="pill">💊 M3 Stadyum Kapsülü (Pill)</option>
+                        <option value="asymmetric">✨ Asimetrik M3 Kart</option>
+                    </select>
+                </div>
+
+                <!-- Conditional Toggles -->
+                <div id="modalClockOptions" style="display:none; flex-direction:column; gap:8px;">
+                    <label class="setting-label">Saat Gösterim Seçenekleri</label>
+                    <label class="checkbox-row">
+                        <span>Saniyeyi Göster</span>
+                        <input type="checkbox" id="modalShowSeconds" checked>
+                    </label>
+                    <label class="checkbox-row">
+                        <span>Tarihi Göster</span>
+                        <input type="checkbox" id="modalShowDate" checked>
+                    </label>
+                    <label class="checkbox-row">
+                        <span>12 Saat Formatı (AM/PM)</span>
+                        <input type="checkbox" id="modalIs12Hour">
+                    </label>
+                </div>
+
+                <div id="modalHardwareOptions" style="display:none; flex-direction:column; gap:8px;">
+                    <label class="setting-label">Donanım Gösterim Seçenekleri</label>
+                    <label class="checkbox-row">
+                        <span>Sıcaklığı Göster (°C)</span>
+                        <input type="checkbox" id="modalShowTemp" checked>
+                    </label>
+                    <label class="checkbox-row">
+                        <span>Yüzde Çubuğunu Göster</span>
+                        <input type="checkbox" id="modalShowBar" checked>
+                    </label>
+                    <label class="checkbox-row" id="rowHardwareBadge">
+                        <span id="labelHardwareBadge">Durum Rozetini Göster</span>
+                        <input type="checkbox" id="modalShowBadge" checked>
+                    </label>
+                </div>
+
+                <div id="modalMediaOptions" style="display:none; flex-direction:column; gap:8px;">
+                    <label class="setting-label">Medya Gösterim Seçenekleri</label>
+                    <label class="checkbox-row">
+                        <span>Arkaplan Blur Albüm Kapağı</span>
+                        <input type="checkbox" id="modalBlurBg" checked>
+                    </label>
+                </div>
+
+                <!-- App Shortcut Options (Dynamic Desktop / Exe / Path Resolver) -->
+                <div id="modalAppShortcutOptions" style="display:none; flex-direction:column; gap:14px;">
+                    
+                    <!-- Mode Selector -->
+                    <div class="setting-group">
+                        <label class="setting-label">Uygulama Kaynağı</label>
+                        <div class="btn-toggle-group" id="shortcutModeToggle" style="margin-top:4px;">
+                            <button class="btn-toggle active" type="button" data-mode="installed">🖥️ Yüklü Uygulamalar</button>
+                            <button class="btn-toggle" type="button" data-mode="custom_path">📁 Dosya Yolu (.desktop / .exe)</button>
+                            <button class="btn-toggle" type="button" data-mode="command">⚡ Komut / Web URL</button>
+                        </div>
+                    </div>
+
+                    <!-- Mode 1: Installed Apps Dropdown with Live Search -->
+                    <div class="setting-group" id="groupInstalledApps">
+                        <label class="setting-label">Bilgisayardaki Uygulamalar</label>
+                        <select class="input-text" id="modalInstalledAppSelect" style="background:#1e1e2d; color:#fff; border:1px solid #3b3b4f; padding:8px 12px; border-radius:8px; width:100%; cursor:pointer;">
+                            <option value="">⏳ Uygulamalar yükleniyor...</option>
+                        </select>
+                    </div>
+
+                    <!-- Mode 2: Custom File Path (.desktop, .exe, executable) -->
+                    <div class="setting-group" id="groupCustomPath" style="display:none;">
+                        <label class="setting-label">Uygulama veya .desktop Dosya Yolu</label>
+                        <div style="display:flex; gap:8px;">
+                            <input type="text" class="input-text" id="modalAppPath" placeholder="Örn: /usr/share/applications/spotify.desktop veya /usr/bin/blender" style="flex:1;">
+                            <button class="btn-mini" type="button" id="btnDetectPath" style="padding:0 12px; font-size:0.75rem;">🔍 Algıla</button>
+                        </div>
+                    </div>
+
+                    <!-- Mode 3: Custom Command or URL -->
+                    <div class="setting-group" id="groupCustomCommand" style="display:none;">
+                        <label class="setting-label">Terminal Komutu veya Web Linki</label>
+                        <input type="text" class="input-text" id="modalAppCommand" placeholder="Örn: https://github.com veya btop veya code ~/Proje">
+                    </div>
+
+                    <!-- Detected Icon & Name Live Box -->
+                    <div style="background:#15151e; border:1px solid #2d2d3d; border-radius:10px; padding:10px 14px; display:flex; align-items:center; justify-content:space-between; gap:12px;">
+                        <div style="display:flex; align-items:center; gap:12px;">
+                            <div id="detectedIconContainer" style="width:38px; height:38px; border-radius:8px; background:#222230; border:1px solid #38384d; display:flex; align-items:center; justify-content:center; overflow:hidden;">
+                                <span id="detectedIconEmoji" style="font-size:1.3rem;">🚀</span>
+                                <img id="detectedIconImg" style="width:100%; height:100%; object-fit:contain; display:none;" alt="İkon">
+                            </div>
+                            <div>
+                                <div id="detectedAppName" style="font-size:0.85rem; font-weight:700; color:#fff;">Uygulama Adı</div>
+                                <div id="detectedAppExec" style="font-size:0.7rem; color:var(--text-muted); font-family:monospace; max-width:260px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">Otomatik Algılanan Komut</div>
+                            </div>
+                        </div>
+                        <input type="hidden" id="modalAppIconUrl" value="">
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn">İptal</button>
+                <button class="btn btn-primary">Uygula</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- CLIENT & DEVICE MANAGER MODAL -->
+    <div class="modal-overlay" id="clientModal">
+        <div class="modal-window" style="max-width: 620px;">
+            <div class="modal-header">
+                <div class="modal-title">🛡️ Cihaz İzinleri & Bağlantı Yönetimi</div>
+                <button class="modal-close">✕</button>
+            </div>
+            <div class="modal-body" style="max-height: 520px; overflow-y: auto; display:flex; flex-direction:column; gap: 18px;">
+                
+                <!-- AUTO-ACCEPT TOGGLE BLOCK -->
+                <div style="background: #15151c; border: 1px solid #282834; border-radius: 12px; padding: 14px 16px; display: flex; align-items: center; justify-content: space-between; gap: 14px;">
+                    <div>
+                        <div style="font-weight: 700; font-size: 0.95rem; color: #fff; display: flex; align-items: center; gap: 8px;">
+                            <span>⚡ Otomatik Bağlantı Kabulü</span>
+                            <span id="autoAcceptStatusTag" style="font-size: 0.7rem; padding: 2px 8px; border-radius: 8px; font-weight: 800; background: #22c55e22; color: #22c55e; border: 1px solid #22c55e44;">AÇIK</span>
+                        </div>
+                        <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 4px; line-height: 1.3;">
+                            Açık olduğunda Wi-Fi ağındaki telefonlar doğrudan bağlanır. Kapalıyken her yeni cihaz için buradan onay vermeniz gerekir.
+                        </div>
+                    </div>
+                    <label style="position: relative; display: inline-block; width: 46px; height: 26px; min-width: 46px; cursor: pointer;">
+                        <input type="checkbox" id="autoAcceptSwitch" style="opacity: 0; width: 0; height: 0;">
+                        <span style="position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #272732; transition: .3s; border-radius: 26px; border: 1px solid #3f3f50;" id="switchSlider"></span>
+                    </label>
+                </div>
+
+                <!-- PENDING APPROVAL REQUESTS -->
+                <div id="pendingSection" style="display:none; flex-direction: column; gap: 8px;">
+                    <div style="font-size: 0.78rem; font-weight: 800; color: #f59e0b; text-transform: uppercase; letter-spacing: 0.6px; display: flex; align-items: center; gap: 6px;">
+                        <span>🟡 Onay Bekleyen Bağlantı İstekleri</span>
+                        <span id="pendingCountBadge" style="font-size: 0.68rem; background: #f59e0b22; color: #f59e0b; padding: 1px 7px; border-radius: 8px; border: 1px solid #f59e0b44;">0</span>
+                    </div>
+                    <div id="pendingList" style="display: flex; flex-direction: column; gap: 8px;">
+                        <!-- Injected via ClientModal Component -->
+                    </div>
+                </div>
+
+                <!-- LIVE CONNECTED CLIENTS -->
+                <div style="display: flex; flex-direction: column; gap: 8px;">
+                    <div style="font-size: 0.78rem; font-weight: 800; color: var(--accent-cyan); text-transform: uppercase; letter-spacing: 0.6px; display: flex; align-items: center; justify-content: space-between;">
+                        <div style="display: flex; align-items: center; gap: 6px;">
+                            <span>🟢 Canlı Bağlı Cihazlar</span>
+                            <span id="liveClientCountBadge" style="font-size: 0.68rem; background: rgba(6, 182, 212, 0.15); color: var(--accent-cyan); padding: 1px 7px; border-radius: 8px; border: 1px solid rgba(6, 182, 212, 0.3);">0</span>
+                        </div>
+                        <button class="btn-mini" id="refreshClientsBtn" style="padding: 2px 8px; font-size: 0.68rem;">🔄 Yenile</button>
+                    </div>
+                    <div id="connectedList" style="display: flex; flex-direction: column; gap: 8px;">
+                        <!-- Injected via ClientModal Component -->
+                    </div>
+                </div>
+
+                <!-- REGISTERED / AUTHORIZED DEVICES -->
+                <div style="display: flex; flex-direction: column; gap: 8px;">
+                    <div style="font-size: 0.78rem; font-weight: 800; color: var(--text-sub); text-transform: uppercase; letter-spacing: 0.6px; display: flex; align-items: center; gap: 6px;">
+                        <span>📋 Kayıtlı / Yetkili Cihazlar</span>
+                    </div>
+                    <div id="authorizedList" style="display: flex; flex-direction: column; gap: 6px;">
+                        <!-- Injected via ClientModal Component -->
+                    </div>
+                </div>
+
+            </div>
+            <div class="modal-footer" style="padding: 12px 18px;">
+                <button class="btn btn-primary">Tamam</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- TOAST NOTIFICATION -->
+    <div class="toast" id="toastMsg"></div>
+
+    <!-- MODULAR ES6 MAIN SCRIPT -->
+    <script type="module" src="/js/app.js?v=2.0"></script>
+</body>
+</html>

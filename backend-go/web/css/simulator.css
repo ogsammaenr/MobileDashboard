@@ -1,0 +1,55 @@
+/* RIGHT PREVIEW / SIMULATOR */
+.preview-sidebar {
+    width: 360px;
+    background: var(--bg-panel);
+    border-left: 1px solid var(--border-panel);
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.phone-mockup {
+    width: 290px;
+    height: 580px;
+    background: #000000;
+    border: 8px solid #1f1f26;
+    border-radius: 36px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.9), 0 0 20px rgba(6, 182, 212, 0.15);
+    padding: 12px 8px;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    overflow: hidden;
+}
+
+.phone-notch {
+    width: 70px;
+    height: 14px;
+    background: #1f1f26;
+    border-radius: 0 0 10px 10px;
+    margin: 0 auto 10px auto;
+}
+
+.phone-screen-grid {
+    flex: 1;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-auto-rows: 55px;
+    gap: 6px;
+    overflow-y: auto;
+    padding-bottom: 8px;
+}
+
+.sim-card {
+    background: #111116;
+    border: 1px solid #22222a;
+    border-radius: 8px;
+    padding: 6px;
+    font-size: 0.62rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    overflow: hidden;
+    box-sizing: border-box;
+}
