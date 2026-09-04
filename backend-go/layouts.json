@@ -18,11 +18,12 @@
           "font_scale": "medium",
           "accent_color": "nord",
           "shape_style": "asymmetric",
-          "params": {
-            "show_temp": true,
-            "show_bar": false,
-            "show_badge": false
-          }
+          "show_seconds": true,
+          "show_date": true,
+          "show_temp": true,
+          "show_bar": false,
+          "show_badge": false,
+          "blur_background": true
         }
       },
       {
@@ -38,11 +39,12 @@
           "font_scale": "medium",
           "accent_color": "nord",
           "shape_style": "asymmetric",
-          "params": {
-            "show_temp": true,
-            "show_bar": false,
-            "show_badge": false
-          }
+          "show_seconds": true,
+          "show_date": true,
+          "show_temp": true,
+          "show_bar": false,
+          "show_badge": false,
+          "blur_background": true
         }
       },
       {
@@ -58,11 +60,12 @@
           "font_scale": "large",
           "accent_color": "nord",
           "shape_style": "rounded",
-          "params": {
-            "show_temp": true,
-            "show_bar": false,
-            "show_badge": false
-          }
+          "show_seconds": true,
+          "show_date": true,
+          "show_temp": true,
+          "show_bar": false,
+          "show_badge": false,
+          "blur_background": true
         }
       },
       {
@@ -76,11 +79,11 @@
         "config": {
           "font_scale": "medium",
           "accent_color": "cyan",
-          "shape_style": "rounded",
-          "params": {
-            "show_seconds": true,
-            "show_date": true
-          }
+          "show_seconds": true,
+          "show_date": true,
+          "show_temp": true,
+          "show_bar": true,
+          "blur_background": true
         }
       },
       {
@@ -95,9 +98,12 @@
           "font_scale": "medium",
           "accent_color": "cyan",
           "shape_style": "rounded",
-          "params": {
-            "show_badge": false
-          }
+          "show_seconds": true,
+          "show_date": true,
+          "show_temp": true,
+          "show_bar": true,
+          "show_badge": false,
+          "blur_background": true
         }
       }
     ]
@@ -119,10 +125,11 @@
         "config": {
           "font_scale": "medium",
           "accent_color": "tokyonight",
-          "shape_style": "rounded",
-          "params": {
-            "blur_background": true
-          }
+          "show_seconds": true,
+          "show_date": true,
+          "show_temp": true,
+          "show_bar": true,
+          "blur_background": true
         }
       }
     ]
@@ -142,14 +149,15 @@
         "span": 4,
         "row_span": 3,
         "config": {
-          "font_scale": "large",
+          "font_scale": "medium",
           "accent_color": "cyan",
           "shape_style": "rounded",
-          "params": {
-            "show_seconds": false,
-            "show_date": true,
-            "is_12hour": false
-          }
+          "show_seconds": false,
+          "show_date": true,
+          "show_temp": true,
+          "show_bar": true,
+          "is_12hour": false,
+          "blur_background": true
         }
       }
     ]
@@ -171,10 +179,11 @@
         "config": {
           "font_scale": "medium",
           "accent_color": "cyan",
-          "shape_style": "rounded",
-          "params": {
-            "show_temp": true
-          }
+          "show_seconds": true,
+          "show_date": true,
+          "show_temp": true,
+          "show_bar": true,
+          "blur_background": true
         }
       }
     ]
@@ -198,12 +207,15 @@
           "font_scale": "large",
           "accent_color": "nord",
           "shape_style": "scalloped",
-          "params": {
-            "app_id": "vesktop",
-            "app_path": "/usr/share/applications/vesktop.desktop",
-            "app_command": "vesktop --enable-features=UseOzonePlatform --ozone-platform=wayland",
-            "app_icon_url": "/api/apps/icon?name=vesktop&path=%2Fusr%2Fshare%2Fapplications%2Fvesktop.desktop"
-          }
+          "app_id": "vesktop",
+          "app_path": "/usr/share/applications/vesktop.desktop",
+          "app_command": "vesktop --enable-features=UseOzonePlatform --ozone-platform=wayland",
+          "app_icon_url": "/api/apps/icon?name=vesktop\u0026path=%2Fusr%2Fshare%2Fapplications%2Fvesktop.desktop",
+          "show_seconds": true,
+          "show_date": true,
+          "show_temp": true,
+          "show_bar": true,
+          "blur_background": true
         }
       },
       {
@@ -219,12 +231,15 @@
           "font_scale": "medium",
           "accent_color": "cyan",
           "shape_style": "segmented_pills",
-          "params": {
-            "app_id": "zen",
-            "app_path": "/usr/share/applications/zen.desktop",
-            "app_command": "/opt/zen-browser-bin/zen-bin",
-            "app_icon_url": "/api/apps/icon?name=zen-browser&path=%2Fusr%2Fshare%2Fapplications%2Fzen.desktop"
-          }
+          "app_id": "zen",
+          "app_path": "/usr/share/applications/zen.desktop",
+          "app_command": "/opt/zen-browser-bin/zen-bin",
+          "app_icon_url": "/api/apps/icon?name=zen-browser\u0026path=%2Fusr%2Fshare%2Fapplications%2Fzen.desktop",
+          "show_seconds": true,
+          "show_date": true,
+          "show_temp": true,
+          "show_bar": true,
+          "blur_background": true
         }
       },
       {
@@ -240,12 +255,15 @@
           "font_scale": "large",
           "accent_color": "cyan",
           "shape_style": "pill",
-          "params": {
-            "app_id": "chrome-hnpfjngllnobngcgfapefoaidbinmjnm-Default",
-            "app_path": "/home/excalibur/.local/share/applications/chrome-hnpfjngllnobngcgfapefoaidbinmjnm-Default.desktop",
-            "app_command": "/usr/bin/chromium --profile-directory=Default --app-id=hnpfjngllnobngcgfapefoaidbinmjnm",
-            "app_icon_url": "/api/apps/icon?name=chrome-hnpfjngllnobngcgfapefoaidbinmjnm-Default&path=%2Fhome%2Fexcalibur%2F.local%2Fshare%2Fapplications%2Fchrome-hnpfjngllnobngcgfapefoaidbinmjnm-Default.desktop"
-          }
+          "app_id": "chrome-hnpfjngllnobngcgfapefoaidbinmjnm-Default",
+          "app_path": "/home/excalibur/.local/share/applications/chrome-hnpfjngllnobngcgfapefoaidbinmjnm-Default.desktop",
+          "app_command": "/usr/bin/chromium --profile-directory=Default --app-id=hnpfjngllnobngcgfapefoaidbinmjnm",
+          "app_icon_url": "/api/apps/icon?name=chrome-hnpfjngllnobngcgfapefoaidbinmjnm-Default\u0026path=%2Fhome%2Fexcalibur%2F.local%2Fshare%2Fapplications%2Fchrome-hnpfjngllnobngcgfapefoaidbinmjnm-Default.desktop",
+          "show_seconds": true,
+          "show_date": true,
+          "show_temp": true,
+          "show_bar": true,
+          "blur_background": true
         }
       },
       {
@@ -261,12 +279,15 @@
           "font_scale": "large",
           "accent_color": "cyan",
           "shape_style": "asymmetric",
-          "params": {
-            "app_id": "org.gnome.Calculator",
-            "app_path": "/usr/share/applications/org.gnome.Calculator.desktop",
-            "app_command": "gnome-calculator",
-            "app_icon_url": "/api/apps/icon?name=org.gnome.Calculator&path=%2Fusr%2Fshare%2Fapplications%2Forg.gnome.Calculator.desktop"
-          }
+          "app_id": "org.gnome.Calculator",
+          "app_path": "/usr/share/applications/org.gnome.Calculator.desktop",
+          "app_command": "gnome-calculator",
+          "app_icon_url": "/api/apps/icon?name=org.gnome.Calculator\u0026path=%2Fusr%2Fshare%2Fapplications%2Forg.gnome.Calculator.desktop",
+          "show_seconds": true,
+          "show_date": true,
+          "show_temp": true,
+          "show_bar": true,
+          "blur_background": true
         }
       },
       {
@@ -282,12 +303,15 @@
           "font_scale": "large",
           "accent_color": "cyan",
           "shape_style": "asymmetric",
-          "params": {
-            "app_id": "org.prismlauncher.PrismLauncher",
-            "app_path": "/usr/share/applications/org.prismlauncher.PrismLauncher.desktop",
-            "app_command": "prismlauncher",
-            "app_icon_url": "/api/apps/icon?name=org.prismlauncher.PrismLauncher&path=%2Fusr%2Fshare%2Fapplications%2Forg.prismlauncher.PrismLauncher.desktop"
-          }
+          "app_id": "org.prismlauncher.PrismLauncher",
+          "app_path": "/usr/share/applications/org.prismlauncher.PrismLauncher.desktop",
+          "app_command": "prismlauncher",
+          "app_icon_url": "/api/apps/icon?name=org.prismlauncher.PrismLauncher\u0026path=%2Fusr%2Fshare%2Fapplications%2Forg.prismlauncher.PrismLauncher.desktop",
+          "show_seconds": true,
+          "show_date": true,
+          "show_temp": true,
+          "show_bar": true,
+          "blur_background": true
         }
       },
       {
@@ -303,12 +327,15 @@
           "font_scale": "large",
           "accent_color": "cyan",
           "shape_style": "pill",
-          "params": {
-            "app_id": "steam",
-            "app_path": "/usr/share/applications/steam.desktop",
-            "app_command": "/usr/bin/steam",
-            "app_icon_url": "/api/apps/icon?name=steam&path=%2Fusr%2Fshare%2Fapplications%2Fsteam.desktop"
-          }
+          "app_id": "steam",
+          "app_path": "/usr/share/applications/steam.desktop",
+          "app_command": "/usr/bin/steam",
+          "app_icon_url": "/api/apps/icon?name=steam\u0026path=%2Fusr%2Fshare%2Fapplications%2Fsteam.desktop",
+          "show_seconds": true,
+          "show_date": true,
+          "show_temp": true,
+          "show_bar": true,
+          "blur_background": true
         }
       }
     ]

@@ -108,7 +108,7 @@ func main() {
 	collector := hardware.NewCollector()
 	mediaCtrl := media.NewController()
 	httpServer := server.NewServer(cfg.Port, collector, mediaCtrl, cfg)
-	discoveryServer := discovery.NewUDPDiscoveryServer(cfg.Port)
+	discoveryServer := discovery.NewUDPDiscoveryServer(cfg.Port, cfg.DiscoveryPort)
 
 	// Start UDP Discovery Server in background goroutine
 	go func() {

@@ -8,31 +8,36 @@ import (
 )
 
 const (
-	DiscoveryPort = 8001
-	PingMessage   = "MOBILEDASHBOARD_DISCOVERY_PING"
+	DefaultDiscoveryPort = 8001
+	PingMessage          = "MOBILEDASHBOARD_DISCOVERY_PING"
 )
 
 type UDPDiscoveryServer struct {
-	httpPort int
-	running  bool
+	httpPort      int
+	discoveryPort int
+	running       bool
 }
 
-func NewUDPDiscoveryServer(httpPort int) *UDPDiscoveryServer {
+func NewUDPDiscoveryServer(httpPort int, discoveryPort int) *UDPDiscoveryServer {
+	if discoveryPort <= 0 {
+		discoveryPort = DefaultDiscoveryPort
+	}
 	return &UDPDiscoveryServer{
-		httpPort: httpPort,
-		running:  false,
+		httpPort:      httpPort,
+		discoveryPort: discoveryPort,
+		running:       false,
 	}
 }
 
 func (s *UDPDiscoveryServer) Start() error {
 	addr := net.UDPAddr{
-		Port: DiscoveryPort,
+		Port: s.discoveryPort,
 		IP:   net.ParseIP("0.0.0.0"),
 	}
 
 	conn, err := net.ListenUDP("udp4", &addr)
 	if err != nil {
-		return fmt.Errorf("failed to bind UDP discovery port %d: %w", DiscoveryPort, err)
+		return fmt.Errorf("failed to bind UDP discovery port %d: %w", s.discoveryPort, err)
 	}
 	defer conn.Close()
 
@@ -40,7 +45,7 @@ func (s *UDPDiscoveryServer) Start() error {
 	hostname, _ := os.Hostname()
 	buf := make([]byte, 1024)
 
-	fmt.Printf("\033[35m\033[1m[📡 UDP DISCOVERY]\033[0m UDP Port :%d dinleniyor (Sıfır Yapılandırma Keşif Aktif)\n", DiscoveryPort)
+	fmt.Printf("\033[35m\033[1m[📡 UDP DISCOVERY]\033[0m UDP Port :%d dinleniyor (Sıfır Yapılandırma Keşif Aktif)\n", s.discoveryPort)
 
 	for s.running {
 		n, clientAddr, err := conn.ReadFromUDP(buf)
