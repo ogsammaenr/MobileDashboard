@@ -1,6 +1,7 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"log"
 	"net"
@@ -98,11 +99,26 @@ func printBanner(ips []string, cfg *config.AppConfig) {
 }
 
 func main() {
+	portFlag := flag.Int("port", 0, "HTTP server port (default 8000)")
+	discoveryFlag := flag.Int("discovery-port", 0, "UDP discovery port (default 8001)")
+	autoAcceptFlag := flag.Bool("auto-accept", false, "Auto accept incoming client pairings")
+	flag.Parse()
+
 	// Load or create config.json
 	cfg, err := config.LoadConfig("config.json")
 	if err != nil {
 		log.Printf("[Config Warning] %v (Varsayılan ayarlar kullanılıyor)", err)
 		cfg = config.DefaultConfig()
+	}
+
+	if *portFlag > 0 {
+		cfg.Port = *portFlag
+	}
+	if *discoveryFlag > 0 {
+		cfg.DiscoveryPort = *discoveryFlag
+	}
+	if *autoAcceptFlag {
+		cfg.AutoAcceptConnections = true
 	}
 
 	collector := hardware.NewCollector()

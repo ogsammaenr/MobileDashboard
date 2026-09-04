@@ -15,4 +15,4 @@ if [ ! -f "./mobiledashboard-server" ] || [ "./main.go" -nt "./mobiledashboard-s
     go build -o mobiledashboard-server main.go
 fi
 
-exec ./mobiledashboard-server
+exec ./mobiledashboard-server "$@"

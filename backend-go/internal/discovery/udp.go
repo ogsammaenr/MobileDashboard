@@ -30,14 +30,32 @@ func NewUDPDiscoveryServer(httpPort int, discoveryPort int) *UDPDiscoveryServer 
 }
 
 func (s *UDPDiscoveryServer) Start() error {
-	addr := net.UDPAddr{
-		Port: s.discoveryPort,
-		IP:   net.ParseIP("0.0.0.0"),
+	var conn *net.UDPConn
+	var err error
+	boundPort := s.discoveryPort
+
+	// Automatic Port-Hopping: Try configured port first, fallback to standard pool 8001..8005
+	candidatePorts := []int{s.discoveryPort, 8001, 8002, 8003, 8004, 8005}
+	tried := make(map[int]bool)
+
+	for _, p := range candidatePorts {
+		if p <= 0 || tried[p] {
+			continue
+		}
+		tried[p] = true
+		addr := net.UDPAddr{
+			Port: p,
+			IP:   net.ParseIP("0.0.0.0"),
+		}
+		conn, err = net.ListenUDP("udp4", &addr)
+		if err == nil {
+			boundPort = p
+			break
+		}
 	}
 
-	conn, err := net.ListenUDP("udp4", &addr)
-	if err != nil {
-		return fmt.Errorf("failed to bind UDP discovery port %d: %w", s.discoveryPort, err)
+	if conn == nil {
+		return fmt.Errorf("failed to bind any UDP discovery port in pool (tried %v): %w", candidatePorts, err)
 	}
 	defer conn.Close()
 
@@ -45,7 +63,7 @@ func (s *UDPDiscoveryServer) Start() error {
 	hostname, _ := os.Hostname()
 	buf := make([]byte, 1024)
 
-	fmt.Printf("\033[35m\033[1m[📡 UDP DISCOVERY]\033[0m UDP Port :%d dinleniyor (Sıfır Yapılandırma Keşif Aktif)\n", s.discoveryPort)
+	fmt.Printf("\033[35m\033[1m[📡 UDP DISCOVERY]\033[0m UDP Port :%d dinleniyor (Sıfır Yapılandırma Keşif Aktif)\n", boundPort)
 
 	for s.running {
 		n, clientAddr, err := conn.ReadFromUDP(buf)

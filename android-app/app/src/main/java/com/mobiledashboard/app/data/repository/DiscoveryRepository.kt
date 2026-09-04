@@ -16,7 +16,7 @@ class DiscoveryRepository {
 
     companion object {
         private const val TAG = "MobileDashboard_Discovery"
-        private const val DISCOVERY_PORT = 8001
+        private val DISCOVERY_PORTS = listOf(8001, 8002, 8003, 8004, 8005)
         private const val PING_MSG = "MOBILEDASHBOARD_DISCOVERY_PING"
         private const val TIMEOUT_MS = 2500
     }
@@ -25,7 +25,7 @@ class DiscoveryRepository {
         val foundServers = mutableSetOf<String>()
         var socket: DatagramSocket? = null
 
-        Log.d(TAG, "📡 UDP Sunucu Keşfi Başlatılıyor (Port: $DISCOVERY_PORT, Timeout: ${TIMEOUT_MS}ms)...")
+        Log.d(TAG, "📡 UDP Sunucu Keşfi Başlatılıyor (Portlar: $DISCOVERY_PORTS, Timeout: ${TIMEOUT_MS}ms)...")
 
         try {
             socket = DatagramSocket().apply {
@@ -35,12 +35,14 @@ class DiscoveryRepository {
 
             val sendData = PING_MSG.toByteArray()
             val broadcastAddr = InetAddress.getByName("255.255.255.255")
-            val sendPacket = DatagramPacket(sendData, sendData.size, broadcastAddr, DISCOVERY_PORT)
 
-            // Send 3 ping packets in rapid succession for reliability on Wi-Fi
-            repeat(3) { i ->
-                socket.send(sendPacket)
-                Log.d(TAG, "📤 PING paketi #${i + 1} 255.255.255.255:$DISCOVERY_PORT adresine gönderildi.")
+            // Send PING packets across candidate discovery ports pool (8001..8005)
+            for (port in DISCOVERY_PORTS) {
+                val sendPacket = DatagramPacket(sendData, sendData.size, broadcastAddr, port)
+                repeat(2) {
+                    socket.send(sendPacket)
+                }
+                Log.d(TAG, "📤 PING paketi 255.255.255.255:$port adresine gönderildi.")
             }
 
             val receiveBuf = ByteArray(1024)
