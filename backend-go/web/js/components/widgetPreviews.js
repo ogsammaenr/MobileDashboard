@@ -18,28 +18,24 @@ export function getWidgetMiniPreviewHtml(w) {
         case 'clock_animated_digital':
         case 'clock_animated_fullscreen':
             return `
-                <div style="width:100%; height:100%; display:flex; flex-direction:column; justify-content:space-between; align-items:center; padding:12px; background:radial-gradient(circle, ${accent}1a 0%, #11131a 80%); border-radius:24px; border:1px solid ${accent}33; font-family:'Space Grotesk',sans-serif; transform:scale(${scale}); position:relative; overflow:hidden;">
-                    <!-- Top Chip Bar -->
-                    <div style="width:100%; display:flex; justify-content:space-between; align-items:center;">
-                        <span style="font-size:0.6rem; color:${accent}; font-weight:900; background:${accent}18; padding:2px 8px; border-radius:10px;">✨ ${title || 'DİJİTAL SAAT'}</span>
-                        <span style="font-size:0.55rem; color:#86efac; background:#86efac18; padding:2px 6px; border-radius:8px; font-weight:bold;">● CANLI</span>
-                    </div>
+                <div style="width:100%; height:100%; display:flex; flex-direction:column; justify-content:center; align-items:center; padding:12px; background:transparent; font-family:'Space Grotesk',sans-serif; transform:scale(${scale}); position:relative; overflow:hidden;">
+                    <!-- Ambient Glow Effect in Center -->
+                    <div style="position:absolute; width:140px; height:140px; border-radius:50%; background:radial-gradient(circle, ${accent}2a 0%, transparent 70%); pointer-events:none;"></div>
 
                     <!-- Center Hero Big Digits with glowing colon -->
-                    <div style="display:flex; align-items:center; justify-content:center; gap:6px; margin:10px 0;">
-                        <span style="font-size:2.6rem; font-weight:900; color:#fff; letter-spacing:-1px; text-shadow:0 0 12px ${accent}44;">21</span>
-                        <span style="font-size:2.4rem; font-weight:900; color:${accent}; animation:pulse 1s infinite;">:</span>
-                        <span style="font-size:2.6rem; font-weight:900; color:${accent}; letter-spacing:-1px; text-shadow:0 0 16px ${accent}66;">58</span>
-                        ${showSec ? `<span style="font-size:1.0rem; font-weight:900; background:#1e202d; color:${accent}; border:1.2px solid ${accent}66; padding:3px 7px; border-radius:12px; margin-left:4px;">:42</span>` : ''}
+                    <div style="display:flex; align-items:center; justify-content:center; gap:8px; z-index:1;">
+                        <span style="font-size:3.2rem; font-weight:900; color:#fff; letter-spacing:-1.5px; text-shadow:0 0 20px ${accent}44;">21</span>
+                        <span style="font-size:2.8rem; font-weight:900; color:${accent}; animation:pulse 1s infinite;">:</span>
+                        <span style="font-size:3.2rem; font-weight:900; color:${accent}; letter-spacing:-1.5px; text-shadow:0 0 24px ${accent}66;">58</span>
+                        ${showSec ? `<span style="font-size:1.3rem; font-weight:900; color:${accent}; opacity:0.9; margin-left:4px;">:42</span>` : ''}
                     </div>
 
-                    <!-- Bottom Date & 60s Progress Bar -->
-                    <div style="width:100%; display:flex; flex-direction:column; align-items:center; gap:6px;">
-                        <span style="font-size:0.62rem; color:#aaa; font-weight:bold; background:#1b1d28; padding:2px 10px; border-radius:10px; border:1px solid #2e3144;">📅 Cuma, 4 Eylül 2026</span>
-                        <div style="width:100%; height:4px; background:#222533; border-radius:2px; overflow:hidden;">
-                            <div style="width:70%; height:100%; background:linear-gradient(90deg, ${accent}88, ${accent}); border-radius:2px;"></div>
+                    <!-- Optional Subtle Date -->
+                    ${cfg.show_date !== false ? `
+                        <div style="margin-top:8px; font-size:0.75rem; color:#fff; opacity:0.65; font-weight:600; letter-spacing:0.5px; z-index:1;">
+                            Cuma, 4 Eylül 2026
                         </div>
-                    </div>
+                    ` : ''}
                 </div>
             `;
         case 'clock_fullscreen_m3':
