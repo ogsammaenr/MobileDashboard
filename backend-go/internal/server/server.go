@@ -1,13 +1,16 @@
 package server
 
 import (
+	"context"
+	"crypto/sha256"
+	"encoding/hex"
 	"encoding/json"
 	"fmt"
 	"io"
 	"net"
 	"net/http"
-	"net/url"
 	"os"
+	"os/exec"
 	"path/filepath"
 	"strings"
 	"sync"
@@ -720,38 +723,130 @@ func (s *Server) handleSystemControl(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *Server) handleMediaCover(w http.ResponseWriter, r *http.Request) {
-	rawPath := r.URL.Query().Get("path")
+	rawPath := r.URL.Query().Get("path") // Already URL-decoded once by Go net/http
 	if rawPath == "" {
 		http.Error(w, "Missing path parameter", http.StatusBadRequest)
 		return
 	}
 
-	decodedPath, err := url.QueryUnescape(rawPath)
+	cleanPath := filepath.Clean(rawPath)
+	stat, err := os.Stat(cleanPath)
 	if err != nil {
-		decodedPath = rawPath
+		http.Error(w, "File not found", http.StatusNotFound)
+		return
 	}
 
-	cleanPath := filepath.Clean(decodedPath)
-	file, err := os.Open(cleanPath)
+	var targetImagePath string
+
+	ext := strings.ToLower(filepath.Ext(cleanPath))
+	audioExts := map[string]bool{
+		".mp3": true, ".flac": true, ".m4a": true, ".ogg": true,
+		".opus": true, ".wav": true, ".aac": true, ".wma": true, ".alac": true,
+	}
+
+	if stat.IsDir() || audioExts[ext] {
+		dir := cleanPath
+		if !stat.IsDir() {
+			dir = filepath.Dir(cleanPath)
+		}
+
+		// 1. Check folder images in the directory
+		imageCandidates := []string{
+			"cover.jpg", "cover.jpeg", "cover.png", "cover.webp",
+			"Folder.jpg", "folder.jpg", "folder.png", "folder.jpeg",
+			"front.jpg", "front.jpeg", "front.png",
+			"album.jpg", "album.jpeg", "album.png",
+			"artwork.jpg", "artwork.png",
+		}
+		for _, candidate := range imageCandidates {
+			candidatePath := filepath.Join(dir, candidate)
+			if s, e := os.Stat(candidatePath); e == nil && !s.IsDir() {
+				targetImagePath = candidatePath
+				break
+			}
+		}
+
+		// 2. If no folder image and it's an audio file, extract embedded cover via ffmpeg
+		if targetImagePath == "" && audioExts[ext] {
+			targetImagePath = extractEmbeddedCoverArt(cleanPath)
+		}
+	} else {
+		targetImagePath = cleanPath
+	}
+
+	if targetImagePath == "" {
+		http.Error(w, "Cover not found", http.StatusNotFound)
+		return
+	}
+
+	file, err := os.Open(targetImagePath)
 	if err != nil {
 		http.Error(w, "File not found", http.StatusNotFound)
 		return
 	}
 	defer file.Close()
 
-	ext := strings.ToLower(filepath.Ext(cleanPath))
-	switch ext {
-	case ".jpg", ".jpeg":
-		w.Header().Set("Content-Type", "image/jpeg")
-	case ".png":
-		w.Header().Set("Content-Type", "image/png")
-	case ".webp":
-		w.Header().Set("Content-Type", "image/webp")
-	default:
-		w.Header().Set("Content-Type", "application/octet-stream")
+	// Sniff Content-Type from first 512 bytes
+	buf := make([]byte, 512)
+	n, _ := file.Read(buf)
+	_, _ = file.Seek(0, io.SeekStart)
+
+	contentType := ""
+	if n > 0 {
+		detected := http.DetectContentType(buf[:n])
+		if strings.HasPrefix(detected, "image/") {
+			contentType = detected
+		}
 	}
 
+	if contentType == "" {
+		targetExt := strings.ToLower(filepath.Ext(targetImagePath))
+		switch targetExt {
+		case ".jpg", ".jpeg":
+			contentType = "image/jpeg"
+		case ".png":
+			contentType = "image/png"
+		case ".webp":
+			contentType = "image/webp"
+		case ".gif":
+			contentType = "image/gif"
+		case ".svg":
+			contentType = "image/svg+xml"
+		default:
+			contentType = "image/jpeg"
+		}
+	}
+
+	w.Header().Set("Content-Type", contentType)
+	w.Header().Set("Cache-Control", "public, max-age=86400")
 	_, _ = io.Copy(w, file)
+}
+
+func extractEmbeddedCoverArt(audioPath string) string {
+	hasher := sha256.New()
+	hasher.Write([]byte(audioPath))
+	hashStr := hex.EncodeToString(hasher.Sum(nil))
+
+	cacheDir := filepath.Join(os.TempDir(), "mobiledashboard_covers")
+	_ = os.MkdirAll(cacheDir, 0755)
+
+	cacheFile := filepath.Join(cacheDir, hashStr+".jpg")
+	if stat, err := os.Stat(cacheFile); err == nil && stat.Size() > 0 {
+		return cacheFile
+	}
+
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
+
+	cmd := exec.CommandContext(ctx, "ffmpeg", "-v", "error", "-y", "-i", audioPath, "-an", "-vcodec", "copy", "-f", "image2", cacheFile)
+	if err := cmd.Run(); err != nil {
+		return ""
+	}
+
+	if stat, err := os.Stat(cacheFile); err == nil && stat.Size() > 0 {
+		return cacheFile
+	}
+	return ""
 }
 
 func (s *Server) getWebDir() string {

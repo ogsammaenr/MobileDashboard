@@ -52,10 +52,14 @@ fun VinylMediaWidget(
         label = "vinylRotation"
     )
 
-    val fullArtUrl = if (data.artUrl.startsWith("http")) {
+    val fullArtUrl = if (data.artUrl.startsWith("http://") || data.artUrl.startsWith("https://") || data.artUrl.startsWith("data:")) {
         data.artUrl
     } else if (data.artUrl.isNotBlank()) {
-        "$serverBaseUrl${data.artUrl}"
+        if (data.artUrl.startsWith("/")) {
+            "$serverBaseUrl${data.artUrl}"
+        } else {
+            "$serverBaseUrl/${data.artUrl}"
+        }
     } else ""
 
     M3Card(modifier = modifier) {

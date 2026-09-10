@@ -10,6 +10,7 @@ Thumbs.db
 
 # Go
 backend-go/mobiledashboard-server
+backend-go/backend-go
 backend-go/*.exe
 backend-go/*.test
 backend-go/*.out
